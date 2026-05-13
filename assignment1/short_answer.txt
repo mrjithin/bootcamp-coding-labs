@@ -2,21 +2,30 @@ Assignment 1: Marriage Pact — short answers
 =============================================
 
 Q1. reserve vs resize — and the capacity you chose in get_applicants.
-    YOUR ANSWER:
+    YOUR ANSWER: reserve changes the capacity of the container but does not change the actual size of 
+    the container whereas resize changes the size of the container and initialises all the elements. reserve
+    is used when we estimate the future need and hence allocate memory accordingly to prevent reallocations.
+    I chose capacity = 1000 since the students.txt had 1000 students and the problem statement also mentioned thousands of students.
 
 
 Q2. What does it mean for a std::ranges algorithm to take a projection?
     Give one example from your find_matches (or explain why a projection
     didn't help).
-    YOUR ANSWER:
+    YOUR ANSWER: A projection is a transformation function through which each element is passed before comparing the output using a 
+    predicate function. Since we used views filter, we could not use a projection here since views do not accept a projection argument. 
+    If we had used ranges::copy_if, we would have passed the `initials()` function as a projection and compared the output initials 
+    to the targetInitials. 
 
 
 Q3. Iterator invalidation in run_mixer. Which strategy did you choose
     (erase-returns-next-iterator / indices / restart) and why?
     What specifically goes wrong with the naive approach?
-    YOUR ANSWER:
+    YOUR ANSWER: Whenever we erase the beginning iterator, all the iterators of elements afterwards in the vector gets invalidated
+    since they get shifted. I chose the erase-returns-next-iterator since whenever we erase the left sided element of the pair, we
+    invalidate all elements to its right so erase returns the iterator to the next valid element in the container (or end() if empty).
 
 
 Q4. at() vs []. When, if ever, would you reach for vec.at(i) over
     vec[i] in this assignment?
-    YOUR ANSWER:
+    YOUR ANSWER: We may use vec.at(i) in the `initials()` function when accessing the string-view `name` if we wanted to throw error
+    for out of bounds access in the name string in case it is empty/ doesn't have last name.  
