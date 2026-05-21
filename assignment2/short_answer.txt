@@ -1,20 +1,20 @@
-Before submitting this file, make sure that there are no more TODO
-placeholders remaining in the file (and remove this comment too).
-
 Unique Pointer
 --------------
 
 Q1. List one or two benefits of using RAII to manage memory instead manually calling `new` and `delete`.
-A1. TODO
+A1. By using RAII, we don't have to manually deallocate memory after use and it's done automatically
+    when the object goes out of scope. The code also becomes less error-prone and there is less boilerplate
+    to manage. 
 
 Q2. When implementing move semantics for a `unique_ptr`, for example in the move constructor `unique_ptr(unique_ptr&& other)`, it is essential that we set the underlying pointer of the `other` parameter to `nullptr` before exiting the function. Explain in your own words what problem would arise if we did not.
-A2. TODO
+A2. If we don't set it to nullptr, then there will be double deletion. When the moved object goes out of scope delete gets called once. 
+    But when the newly created object goes out of scope, we delete the same memory location again resulting in double deletion. 
 
 Q3. This method of recursive deallocation through RAII works great for small lists, but may pose a problem for longer lists. Why? Hint: what is the limit for how "deep" a recursive function's call stack can grow?
-A3. TODO
+A3. When the list becomes huge, the recursive deallocation results in a huge stack depth resulting in stack overflow. Instead we should use iterative.
 
 Q4. What does `std::move` do in this context? Why is it safe to use `std::move` and move semantics here?
-A4. TODO
+A4. std::move type casts
 
 Q5. Why does `operator->` return `T*` (a pointer) rather than `T&` (a reference)? Walk through what the compiler does when it sees `ptr->member`.
 A5. TODO
