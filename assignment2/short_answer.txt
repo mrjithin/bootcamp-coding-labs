@@ -14,13 +14,16 @@ Q3. This method of recursive deallocation through RAII works great for small lis
 A3. When the list becomes huge, the recursive deallocation results in a huge stack depth resulting in stack overflow. Instead we should use iterative.
 
 Q4. What does `std::move` do in this context? Why is it safe to use `std::move` and move semantics here?
-A4. std::move type casts
+A4. std::move moves the underlying pointer from the original unique_ptr to the new one while making the original point to nullptr.
+This is necessary and safe since we don't want multiple unique_ptr to point to the same one as it will cause issues such as double free. 
 
 Q5. Why does `operator->` return `T*` (a pointer) rather than `T&` (a reference)? Walk through what the compiler does when it sees `ptr->member`.
-A5. TODO
+A5. The compiler recursively calls -> until it returns a pointer after which it calls the normal -> operator (equivalent to (*).). Hence we return a pointer
+instead of a reference. 
 
 Q6. Why does this class need BOTH `T& operator*()` and `const T& operator*() const`? Give a one-line code example that would fail to compile if one of them were missing, and explain which one.
-A6. TODO
+A6. We need both so that we can make both const and non-const references to the unique_ptr. auto func(const unique_ptr<int>& a) { return *a;} will not run if the const version is absent.  
 
 Q7. We marked `operator bool()` as `explicit`. What kind of unintended code would compile if we had left the `explicit` off? Give a concrete example.
-A7. TODO
+A7. If we did not mark explicit, the unique_ptr will convert to a bool implicitly in all cases requiring an integer which is unintended. 
+Example, unique_ptr<int> ptr(new int(3)); int b=30+ptr; will give b=33. 
