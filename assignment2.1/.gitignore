@@ -1,2 +1,5 @@
 reference
 *.dSYM
+cycle
+leak_hunt
+tracker_lab

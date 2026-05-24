@@ -49,14 +49,14 @@ static int next_id() {
 //         // TODO: assign id_ using next_id()
 //         // TODO: allocate data_ with new
 //         // TODO: log "[id_] born"
-//         std::cout << id_ << " born" << std::endl;
+//         std::cerr << id_ << " born" << std::endl;
 //     }
 
 //     ~Tracker() {
 //         // TODO: log "[id_] destroyed"
 //         // TODO: delete data_
 //         delete data_;
-//         std::cout << id_ << " destroyed" << std::endl;
+//         std::cerr << id_ << " destroyed" << std::endl;
 //     }
 
 //     Tracker(const Tracker& other) : id_(next_id()), data_(new
@@ -64,7 +64,7 @@ static int next_id() {
 //         // TODO: assign id_ using next_id()
 //         // TODO: deep-copy other.data_
 //         // TODO: log "[id_] copied from [other.id_]"
-//         std::cout << id_ << " copied from " << other.id_ << std::endl;
+//         std::cerr << id_ << " copied from " << other.id_ << std::endl;
 //     }
 
 //     Tracker& operator=(const Tracker& other) {
@@ -78,7 +78,7 @@ static int next_id() {
 //         }
 //         delete data_;
 //         data_ = new T(*other.data_);
-//         std::cout << id_ << " assigned from " << other.id_ << std::endl;
+//         std::cerr << id_ << " assigned from " << other.id_ << std::endl;
 //         return *this;
 //     }
 
@@ -149,44 +149,39 @@ template <typename T>
 class Tracker {
    public:
     int id_;
-    T* data_;  // owning raw pointer — YOU are responsible for deleting this
+    std::unique_ptr<T> data_;
 
-    explicit Tracker(T value) : id_(next_id()), data_(new T(value)) {
+    explicit Tracker(T value)
+        : id_(next_id()), data_(std::make_unique<T>(value)) {
         // TODO: assign id_ using next_id()
         // TODO: allocate data_ with new
         // TODO: log "[id_] born"
-        std::cout << id_ << " born" << std::endl;
+        std::cerr << id_ << " born" << std::endl;
     }
 
     ~Tracker() {
         // TODO: log "[id_] destroyed"
         // TODO: delete data_
-        delete data_;
-        std::cout << id_ << " destroyed" << std::endl;
+        std::cerr << id_ << " destroyed" << std::endl;
     }
 
-    Tracker(const Tracker& other) : id_(next_id()), data_(new T(*other.data_)) {
-        // TODO: assign id_ using next_id()
-        // TODO: deep-copy other.data_
-        // TODO: log "[id_] copied from [other.id_]"
-        std::cout << id_ << " copied from " << other.id_ << std::endl;
+    Tracker(const Tracker& other) = delete;
+
+    Tracker& operator=(const Tracker& other) = delete;
+
+    Tracker(Tracker&& other) noexcept
+        : id_(next_id()), data_(std::move(other.data_)) {
+        std::cerr << id_ << " moved from " << other.id_ << std::endl;
     }
 
-    Tracker& operator=(const Tracker& other) {
-        // TODO: guard against self-assignment (if (this == &other) return
-        // *this;)
-        // TODO: delete old data_
-        // TODO: deep-copy other.data
-        // TODO: log "[id_] assigned from [other.id_]"
+    Tracker& operator=(Tracker&& other) noexcept {
         if (this == &other) {
             return *this;
         }
-        delete data_;
-        data_ = new T(*other.data_);
-        std::cout << id_ << " assigned from " << other.id_ << std::endl;
+        data_ = std::move(other.data_);
+        std::cerr << id_ << " move-assigned from " << other.id_ << std::endl;
         return *this;
     }
-
     // implement getters
     // (do you need multiple? think about const correctness)
     T& get() { return *data_; }
@@ -197,36 +192,36 @@ class Tracker {
 // ─── Stage 2 main
 // ─────────────────────────────────────────────────────────────
 
-int main() {
-    std::cerr << "=== Stage 2: unique_ptr Tracker ===\n";
+// int main() {
+//     std::cerr << "=== Stage 2: unique_ptr Tracker ===\n";
 
-    {
-        Tracker<int> a(10);
-        // Tracker<int> b = a;           // should not compile — why?
-        Tracker<int> b = std::move(a);  // move is fine
-        std::cerr << "b=" << b.get() << "\n";
-        // What is a's state here? Try printing a.get() and see what happens.
-    }
+//     {
+//         Tracker<int> a(10);
+//         // Tracker<int> b = a;           // should not compile — why?
+//         Tracker<int> b = std::move(a);  // move is fine
+//         std::cerr << "b=" << b.get() << "\n";
+//         // What is a's state here? Try printing a.get() and see what happens.
+//     }
 
-    std::cerr << "\n--- vector with move-only elements ---\n";
-    {
-        std::vector<Tracker<int>> v;
-        v.push_back(Tracker<int>(1));
-        v.push_back(Tracker<int>(2));
-        v.push_back(Tracker<int>(3));
-        // Notice: the vector now moves elements instead of copying.
-        // The log should be shorter than Stage 1's.
-    }
+//     std::cerr << "\n--- vector with move-only elements ---\n";
+//     {
+//         std::vector<Tracker<int>> v;
+//         v.push_back(Tracker<int>(1));
+//         v.push_back(Tracker<int>(2));
+//         v.push_back(Tracker<int>(3));
+//         // Notice: the vector now moves elements instead of copying.
+//         // The log should be shorter than Stage 1's.
+//     }
 
-    // Factory function pattern — common in real codebases:
-    auto make = [](int val) -> std::unique_ptr<Tracker<int>> {
-        return std::make_unique<Tracker<int>>(val);
-    };
-    auto t = make(42);
-    std::cerr << "factory-made tracker: " << t->get() << "\n";
+//     // Factory function pattern — common in real codebases:
+//     auto make = [](int val) -> std::unique_ptr<Tracker<int>> {
+//         return std::make_unique<Tracker<int>>(val);
+//     };
+//     auto t = make(42);
+//     std::cerr << "factory-made tracker: " << t->get() << "\n";
 
-    return 0;
-}
+//     return 0;
+// }
 
 // =============================================================================
 // STAGE 3 — Shared ownership with std::shared_ptr<T>.
@@ -253,23 +248,38 @@ class Portfolio {
     void add(std::shared_ptr<Tracker<int>> t) {
         // TODO: push_back t, then log name_ + " now holds tracker " + id
         //       and print t.use_count()
+        holdings_.push_back(std::move(t));
+        std::cerr << name_ << " now holds tracker " << holdings_.back()->id_
+                  << "  use_count=" << holdings_.back().use_count()
+                  << std::endl;
     }
 
     void print() const {
         // TODO: implement print out for each holding in the portfolio
+        std::cerr << name_ << std::endl;
+        for (auto& t : holdings_) {
+            std::cerr << "Tracker " << t->id_ << " with value " << t->get()
+                      << std::endl;
+        }
     }
 };
 
 std::shared_ptr<Tracker<int>> make_tracker(int value) {
     // TODO: produce a shared pointer
     // Q1: Why make a make_tracker function?
+    // Ans: It results in us making less mistakes and also helps in writing less
+    // code. make_shared also fixes a bug in C++14.
     // Q2: There are two ways to make a shared_ptr<Tracker<int>>. Which one is
     // more appropriate here and is one always better?
+    // Ans: We use make_shared due to its efficiency and safety. It is not
+    // always better for example if we want a custom deleter then we would use
+    // new and pass the raw pointer.
+    return std::make_shared<Tracker<int>>(value);
 }
 
 // ─── Stage 3 main
 // ─────────────────────────────────────────────────────────────
-/*
+
 int main() {
     std::cerr << "=== Stage 3: shared_ptr ===\n";
 
@@ -285,7 +295,7 @@ int main() {
 
         alpha.add(t1);
         alpha.add(t2);
-        beta.add(t1);   // t1 now shared between alpha and beta
+        beta.add(t1);  // t1 now shared between alpha and beta
 
         alpha.print();
         beta.print();
@@ -294,11 +304,10 @@ int main() {
     }
     // alpha and beta destroyed here — their copies of the shared_ptr drop
     std::cerr << "After portfolios destroyed: t1.use_count=" << t1.use_count()
-<< "\n"; // should be 1
+              << "\n";  // should be 1
 
     return 0;
 }
-*/
 
 // =============================================================================
 // STAGE 4 — Cycles: the one hole in shared_ptr.
@@ -308,10 +317,22 @@ int main() {
 //
 // Discussion questions (answer before moving to Stage 5):
 //   Q1: Which direction of a link should be weak? Why?
+// Ans: The endpoint reading/observing the other should be weak. This is because
+// the observing endpoint does not need to keep the other alive, and making it
+// weak prevents cycles that lead to memory leaks.
 //   Q2: How do you safely dereference a weak_ptr?
+// Ans: First we check if the weak_ptr is valid by calling lock() and checking
+// if not null. If valid we can safely dereference the resulting shared_ptr.
 //   Q3: What happens to a weak_ptr when its shared_ptr owner is destroyed?
+// Ans: When the shared_ptr owner is destroyed, the weak_ptr becomes expired.
 //   Q4: Look at the Trader-Order set of objects. Why is the back-ref creation
 //   bad, and how do we fix it?
+// Ans: First, we need to make the back ref from Order to Trader a weak ptr to
+// avoid the cycle because otherwise the deallocation of Trader and Order will
+// never happen. Secondly to assign the new owner of the order as this, we need
+// to use shared_from_this() to get a shared_ptr to the current Trader object
+// and assign it to the order's owner_ weak_ptr. This way, the Order can observe
+// its owner without keeping it alive.
 // =============================================================================
 
 // =============================================================================
