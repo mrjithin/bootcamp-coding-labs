@@ -7,6 +7,8 @@
 #include <set>
 #include <vector>
 
+namespace rv=std::ranges::views;
+
 template <typename Iterator, typename UnaryPred>
 std::vector<Iterator> find_all(Iterator begin, Iterator end, UnaryPred pred);
 
@@ -28,7 +30,21 @@ Corpus tokenize(std::string& source) {
 
 std::set<Misspelling> spellcheck(const Corpus& source, const Dictionary& dictionary) {
   /* TODO: Implement this method */
-  return std::set<Misspelling>();
+  auto view = source | rv::filter([&dictionary](const auto& token){
+    return !dictionary.contains(token.content);
+  }) | rv::transform([&dictionary](const auto& token){
+    auto close_words=dictionary | rv::filter([&token](const auto& word){
+      return levenshtein(token.content,word)==1;
+    });
+
+    auto suggestions = std::set(close_words.begin(),close_words.end());
+
+    return Misspelling(token,suggestions);
+  }) | rv::filter([](const auto& misspelling){
+    return !misspelling.suggestions.empty();
+  });
+
+  return std::set<Misspelling>(view.begin(),view.end());
 };
 
 /* Helper methods */
