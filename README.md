@@ -29,8 +29,6 @@ Each assignment has its own `README.md` with build and run instructions. To pull
 ```sh
 git pull origin main
 ```
-<<<<<<< HEAD
-=======
 
 ## Syncing With the Template Repo
 
@@ -83,4 +81,3 @@ git status
 git branch
 git log --oneline --graph --all --decorate
 ```
->>>>>>> upstream/main
