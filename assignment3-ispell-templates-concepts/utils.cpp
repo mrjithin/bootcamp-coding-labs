@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <string>
 #include <tuple>
+#include <iterator>
+#include <concepts>
 
 bool operator<(const Token& a, const Token& b) {
   return std::tie(a.src_offset, a.content) < std::tie(b.src_offset, b.content);
@@ -8,7 +10,7 @@ bool operator<(const Token& a, const Token& b) {
 
 bool operator<(const Misspelling& a, const Misspelling& b) { return a.token < b.token; }
 
-template <typename Iterator, typename UnaryPred>
+template <std::input_iterator Iterator, std::indirect_unary_predicate<Iterator> UnaryPred>
 std::vector<Iterator> find_all(Iterator begin, Iterator end, UnaryPred pred) {
   std::vector<Iterator> its{begin};
   for (auto it = begin; it != end; ++it) {
