@@ -431,40 +431,48 @@
 <text id="matched" x="1090.00" y="181" > </text>
 <g id="frames">
 <g >
-<title>grid_bfs (84,389,286 samples, 100.00%)</title><rect x="10.0" y="133" width="1180.0" height="15.0" fill="rgb(238,156,37)" rx="2" ry="2" />
-<text  x="13.00" y="143.5" >grid_bfs</text>
+<title>asm_exc_page_fault (9,840,360 samples, 0.55%)</title><rect x="10.0" y="37" width="6.5" height="15.0" fill="rgb(225,93,22)" rx="2" ry="2" />
+<text  x="13.00" y="47.5" ></text>
 </g>
 <g >
-<title>shortest_path_bfs (75,048,390 samples, 88.93%)</title><rect x="140.6" y="37" width="1049.4" height="15.0" fill="rgb(217,58,14)" rx="2" ry="2" />
-<text  x="143.61" y="47.5" >shortest_path_bfs</text>
-</g>
-<g >
-<title>__libc_start_call_main (84,389,286 samples, 100.00%)</title><rect x="10.0" y="85" width="1180.0" height="15.0" fill="rgb(210,26,6)" rx="2" ry="2" />
-<text  x="13.00" y="95.5" >__libc_start_call_main</text>
-</g>
-<g >
-<title>main (84,389,286 samples, 100.00%)</title><rect x="10.0" y="69" width="1180.0" height="15.0" fill="rgb(243,179,42)" rx="2" ry="2" />
-<text  x="13.00" y="79.5" >main</text>
-</g>
-<g >
-<title>generate_grid[abi:cxx11] (9,340,896 samples, 11.07%)</title><rect x="10.0" y="53" width="130.6" height="15.0" fill="rgb(253,224,53)" rx="2" ry="2" />
-<text  x="13.00" y="63.5" >generate_grid[ab..</text>
-</g>
-<g >
-<title>_start (84,389,286 samples, 100.00%)</title><rect x="10.0" y="117" width="1180.0" height="15.0" fill="rgb(245,185,44)" rx="2" ry="2" />
+<title>_start (1,789,698,344 samples, 100.00%)</title><rect x="10.0" y="117" width="1180.0" height="15.0" fill="rgb(245,185,44)" rx="2" ry="2" />
 <text  x="13.00" y="127.5" >_start</text>
 </g>
 <g >
-<title>run_all_requests (75,048,390 samples, 88.93%)</title><rect x="140.6" y="53" width="1049.4" height="15.0" fill="rgb(249,203,48)" rx="2" ry="2" />
-<text  x="143.61" y="63.5" >run_all_requests</text>
+<title>all (1,789,698,344 samples, 100%)</title><rect x="10.0" y="149" width="1180.0" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
+<text  x="13.00" y="159.5" ></text>
 </g>
 <g >
-<title>__libc_start_main@@GLIBC_2.34 (84,389,286 samples, 100.00%)</title><rect x="10.0" y="101" width="1180.0" height="15.0" fill="rgb(229,113,27)" rx="2" ry="2" />
+<title>__libc_start_main@@GLIBC_2.34 (1,789,698,344 samples, 100.00%)</title><rect x="10.0" y="101" width="1180.0" height="15.0" fill="rgb(229,113,27)" rx="2" ry="2" />
 <text  x="13.00" y="111.5" >__libc_start_main@@GLIBC_2.34</text>
 </g>
 <g >
-<title>all (84,389,286 samples, 100%)</title><rect x="10.0" y="149" width="1180.0" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
-<text  x="13.00" y="159.5" ></text>
+<title>compute_congestion_pressure (682,229,064 samples, 38.12%)</title><rect x="16.5" y="53" width="449.8" height="15.0" fill="rgb(218,61,14)" rx="2" ry="2" />
+<text  x="19.49" y="63.5" >compute_congestion_pressure</text>
+</g>
+<g >
+<title>__libc_start_call_main (1,789,698,344 samples, 100.00%)</title><rect x="10.0" y="85" width="1180.0" height="15.0" fill="rgb(210,26,6)" rx="2" ry="2" />
+<text  x="13.00" y="95.5" >__libc_start_call_main</text>
+</g>
+<g >
+<title>run_all_requests (1,097,628,920 samples, 61.33%)</title><rect x="466.3" y="53" width="723.7" height="15.0" fill="rgb(249,203,48)" rx="2" ry="2" />
+<text  x="469.30" y="63.5" >run_all_requests</text>
+</g>
+<g >
+<title>__memset_avx2_unaligned_erms (9,840,360 samples, 0.55%)</title><rect x="10.0" y="53" width="6.5" height="15.0" fill="rgb(223,84,20)" rx="2" ry="2" />
+<text  x="13.00" y="63.5" ></text>
+</g>
+<g >
+<title>shortest_path_bfs (1,097,628,920 samples, 61.33%)</title><rect x="466.3" y="37" width="723.7" height="15.0" fill="rgb(217,58,14)" rx="2" ry="2" />
+<text  x="469.30" y="47.5" >shortest_path_bfs</text>
+</g>
+<g >
+<title>main (1,789,698,344 samples, 100.00%)</title><rect x="10.0" y="69" width="1180.0" height="15.0" fill="rgb(243,179,42)" rx="2" ry="2" />
+<text  x="13.00" y="79.5" >main</text>
+</g>
+<g >
+<title>grid_bfs (1,789,698,344 samples, 100.00%)</title><rect x="10.0" y="133" width="1180.0" height="15.0" fill="rgb(238,156,37)" rx="2" ry="2" />
+<text  x="13.00" y="143.5" >grid_bfs</text>
 </g>
 </g>
 </svg>

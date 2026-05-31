@@ -1,0 +1,3 @@
+grid_bfs;_start;__libc_start_main@@GLIBC_2.34;__libc_start_call_main;main;__memset_avx2_unaligned_erms;asm_exc_page_fault 9840360
+grid_bfs;_start;__libc_start_main@@GLIBC_2.34;__libc_start_call_main;main;compute_congestion_pressure 682229064
+grid_bfs;_start;__libc_start_main@@GLIBC_2.34;__libc_start_call_main;main;run_all_requests;shortest_path_bfs 1097628920
