@@ -230,7 +230,7 @@ int main() {
     const int lane_count = 32;
     const int packet_count = 220000;
     const int dependency_count = 1 << 18;
-    const int history_cols = 128;   // 2048 too
+    const int history_cols = 2048;   // 2048 too
     const int epochs = 6;
 
     std::vector<Packet> packets = build_packets(packet_count, device_count, lane_count);

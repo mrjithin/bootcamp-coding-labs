@@ -380,6 +380,7 @@ CongestionSummary compute_congestion_pressure(const vector<int> &heatmap,
     for (int pass = 0; pass < congestion_passes; ++pass) {
         for (int row = 1; row < rows - 1; ++row) {
             int cur_offset = row * cols;
+            #pragma omp simd
             for (int col = 1; col < cols - 1; ++col) {
                 int index = cur_offset + col;
 

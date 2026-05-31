@@ -1,10 +1,10 @@
 CXX := g++
-CXXFLAGS_BASE := -std=c++20 -Wall -Wextra -pedantic
-CXXFLAGS_RELEASE := $(CXXFLAGS_BASE) -O2 -g
+CXXFLAGS_BASE := -std=c++20 -Wall -Wextra -pedantic -fopenmp-simd
+CXXFLAGS_RELEASE := $(CXXFLAGS_BASE) -O2 -g 
 CXXFLAGS_DEBUG := $(CXXFLAGS_BASE) -O0 -g
 CXXFLAGS_PERF := $(CXXFLAGS_BASE) -O2 -g -fno-omit-frame-pointer
 CXXFLAGS_GPROF := $(CXXFLAGS_BASE) -O0 -g -pg
-CXXFLAGS_OPTIMIZED := $(CXXFLAGS_BASE) -O3 -g
+CXXFLAGS_OPTIMIZED := $(CXXFLAGS_BASE) -O3 -march=native -g -fopenmp-simd
 
 TARGET := grid_bfs
 SOURCE := grid_bfs_new.cpp
