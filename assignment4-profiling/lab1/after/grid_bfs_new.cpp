@@ -187,12 +187,12 @@ uint64_t checksum_label(const string &label) {
  *
  * The function returns -1 when the goal cannot be reached.
  */
-int shortest_path_bfs(const string &flat_grid, const RouteRequest &request,
+int shortest_path_bfs(const vector<int>& base_dist,const string &flat_grid, const RouteRequest &request,
                       vector<int> &heatmap,vector<int>& distance, vector<int>& frontier,int cols) {
     
     int total = flat_grid.size();
 
-    memset(distance.data(), -1, total * sizeof(int));
+    memcpy(distance.data(), base_dist.data(), total * sizeof(int));
     //distance.assign(total, -1);
     //unsigned char *visited = new unsigned char[total]{};
     size_t frontier_head = 0;
@@ -229,30 +229,31 @@ int shortest_path_bfs(const string &flat_grid, const RouteRequest &request,
         // }
         int current_dist = distance[current_index];
         int next_index;
+        int col = current_index % cols;
 
         next_index = current_index - cols;
-        if (flat_grid[next_index] != '#' && distance[next_index] == -1) {
+        if (next_index >=0 && distance[next_index] == -1) {
             distance[next_index] = current_dist + 1;
             heatmap[next_index] += 1;
             frontier[frontier_tail++] = next_index;
         }
 
         next_index = current_index + cols;
-        if (flat_grid[next_index] != '#' && distance[next_index] == -1) {
+        if (next_index < total && distance[next_index] == -1) {
             distance[next_index] = current_dist + 1;
             heatmap[next_index] += 1;
             frontier[frontier_tail++] = next_index;
         }
 
         next_index = current_index - 1;
-        if (flat_grid[next_index] != '#' && distance[next_index] == -1) {
+        if (col>0 && distance[next_index] == -1) {
             distance[next_index] = current_dist + 1;
             heatmap[next_index] += 1;
             frontier[frontier_tail++] = next_index;
         }
 
         next_index = current_index + 1;
-        if (flat_grid[next_index] != '#' && distance[next_index] == -1) {
+        if (col < cols - 1 && distance[next_index] == -1) {
             distance[next_index] = current_dist + 1;
             heatmap[next_index] += 1;
             frontier[frontier_tail++] = next_index;
@@ -273,12 +274,18 @@ RunSummary run_all_requests(const string &flat_grid,
     int total = flat_grid.size();
     vector<int> dist(total);
     vector<int> frontier(total);
+    vector<int> base_dist(total, -1);
+    for (int i = 0; i < total; ++i) {
+        if (flat_grid[i] == '#') {
+            base_dist[i] = -2;
+        }
+    }
     for (int i = 0; i < summary.requests; ++i) {
         const RouteRequest &request = requests[i];
         string route_label = format_route_label(request, i);
         summary.route_label_checksum ^= checksum_label(route_label);
 
-        int distance = shortest_path_bfs(flat_grid, request, heatmap, dist, frontier, cols);
+        int distance = shortest_path_bfs(base_dist, flat_grid, request, heatmap, dist, frontier, cols);
 
         if (distance >= 0) {
             summary.reachable += 1;
@@ -477,8 +484,14 @@ bool run_sanity_check() {
     int total = rows * cols;
     vector<int> distance(total);
     vector<int> frontier(total);
-    return shortest_path_bfs(flat_grid, reachable, heatmap, distance, frontier, cols) == 8 &&
-           shortest_path_bfs(flat_grid, unreachable, heatmap, distance, frontier, cols) == -1;
+    vector<int> base_dist(total, -1);
+    for (int i = 0; i < total; ++i) {
+        if (flat_grid[i] == '#') {
+            base_dist[i] = -2;
+        }
+    }
+    return shortest_path_bfs(base_dist, flat_grid, reachable, heatmap, distance, frontier, cols) == 8 &&
+           shortest_path_bfs(base_dist, flat_grid, unreachable, heatmap, distance, frontier, cols) == -1;
 }
 
 /**
