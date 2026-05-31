@@ -24,6 +24,12 @@ To optimize the BFS, the algorithm was shifted to a 1D memory model. By pre-comp
 
 Subsequent profiling showed the BFS was optimized, shifting the primary bottleneck entirely to compute_congestion_pressure. Analyzing the loop structure revealed a cache locality issue: the loops iterated column-by-column rather than row-by-row. Applying a loop interchange restored spatial locality, drastically reducing L1 cache misses.
 
+### What I tried and failed
+
+1. Moving the 4-direction offset array definition inside the while loop to manually force the CPU to unroll the checks. It failed due to having to allocate the array on stack on each iteration. 
+
+2. Re-calculating row * 17 and pass * 13 in the outer loops and passing them as explicit variables to next_pressure_value. It didn't change the runtime of the code since the compiler was already optimising it. 
+
 ### Before 
 ![time before](image-2.png)
 

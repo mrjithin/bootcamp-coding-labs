@@ -195,7 +195,7 @@ static int chase_dependency(int start, int steps, const std::vector<int>& next, 
     return total;
 }
 
-static int cold_column_probe(const std::vector<int>& history, int rows, int cols, int seed) {
+static int cold_column_probe(const std::vector<int>& history, int rows, int cols) {
     int sum = 0;
     // int start_col = seed % cols;
 
@@ -206,6 +206,7 @@ static int cold_column_probe(const std::vector<int>& history, int rows, int cols
     //     }
     // }
     const int total=rows*cols;
+
     for(int i=0; i<total; ++i){
         sum+=history[i] & 31;
     }
@@ -216,8 +217,6 @@ static int cold_column_probe(const std::vector<int>& history, int rows, int cols
 static long long process_packets(
     const std::vector<Packet>& packets,
     const std::vector<int>& lane_weight,
-    const std::vector<int>& dependency_next,
-    const std::vector<int>& dependency_value,
     const std::vector<int>& chase_cache
 ) {
     long long total = 0;
@@ -241,8 +240,6 @@ static long long process_packets(
 static long long run_epoch(
     std::vector<Packet>& packets,
     const std::vector<int>& lane_weight,
-    const std::vector<int>& dependency_next,
-    const std::vector<int>& dependency_value,
     std::vector<int>& history,
     int history_cols,
     const std::vector<int>& chase_cache
@@ -252,13 +249,11 @@ static long long run_epoch(
     long long total = process_packets(
         packets,
         lane_weight,
-        dependency_next,
-        dependency_value,
         chase_cache
     );
 
     int rows = (int)history.size() / history_cols;
-    total += cold_column_probe(history, rows, history_cols, (int)(total & 1023));
+    total += cold_column_probe(history, rows, history_cols);
     return total;
 }
 
@@ -281,6 +276,7 @@ int main() {
     std::vector<int> history(device_count * history_cols, 0);
 
     std::vector<int> chase_cache(dependency_count);
+
     for(int i=0; i<dependency_count; ++i){
         chase_cache[i]=chase_dependency(i, STEPS, dependency_next, dependency_value);
     }
@@ -290,8 +286,6 @@ int main() {
         answer += run_epoch(
             packets,
             lane_weight,
-            dependency_next,
-            dependency_value,
             history,
             history_cols,
             chase_cache
