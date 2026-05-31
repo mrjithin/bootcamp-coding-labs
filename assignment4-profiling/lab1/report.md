@@ -16,11 +16,11 @@ Include before/after evidence from:
 
 ## 3. Correctness Evidence
 
-Include:
+### Before:
+![Before optimizations correctness](image-1.png)
 
-- `make test`
-- Final normal run output
-- Checksum comparison before and after optimization
+### After: 
+![After optimizations correctness](image.png)
 
 ## 4. Conceptual Questions
 
