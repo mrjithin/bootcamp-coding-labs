@@ -30,16 +30,26 @@ build-valgrind: $(SOURCE)
 run-valgrind: build-valgrind
 	valgrind --leak-check=full ./$(TARGET)
 
-# Callgrind build (for kCacheGrind): fully optimized with debug symbols
+# Callgrind build (for kCacheGrind): optimized but block inlining
 build-callgrind: $(SOURCE)
-	$(CXX) $(CXXFLAGS) -O2 -g $< -o $(TARGET)
+	$(CXX) $(CXXFLAGS) -O2 -g -fno-inline $< -o $(TARGET)
+
+# Highly Optimized build: -O3, vectorization, and link-time optimizations
+build-opt: $(SOURCE)
+	$(CXX) $(CXXFLAGS) -O3 -march=native $< -o $(TARGET)
+
+run-opt: build-opt
+	time taskset -c 0 ./$(TARGET)
 
 run-callgrind: build-callgrind
-	valgrind --tool=callgrind --callgrind-out-file=callgrind.out ./$(TARGET)
+	valgrind --tool=callgrind --cache-sim=yes --branch-sim=yes --callgrind-out-file=callgrind.out ./$(TARGET)
 	@echo "Run 'kcachegrind callgrind.out' to view the results."
 
 run: all
 	./$(TARGET)
+
+run-time: all
+	time taskset -c 0 ./$(TARGET)
 
 test: all
 	@test "$$(./$(TARGET))" = "6040578838"
@@ -52,6 +62,7 @@ help:
 	@echo "Targets:"
 	@echo "  all             - build the baseline program (-O2 -g)"
 	@echo "  run             - build and run the baseline program"
+	@echo "  run-time        - run the program with execution time measurement"
 	@echo "  test            - check the baseline output"
 	@echo "  build-perf      - build with frame pointers for perf"
 	@echo "  run-perf-stat   - run performance counter stats with perf"
@@ -61,4 +72,6 @@ help:
 	@echo "  run-valgrind    - run with valgrind leak-check"
 	@echo "  build-callgrind - build for callgrind profiling (-O2)"
 	@echo "  run-callgrind   - run callgrind (view with kCacheGrind)"
+	@echo "  build-opt       - build with maximum optimizations (-O3 -march=native)"
+	@echo "  run-opt         - run the highly optimized build"
 	@echo "  clean           - remove the binary and profiling data"
