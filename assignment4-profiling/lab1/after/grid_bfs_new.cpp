@@ -348,7 +348,7 @@ HeatmapSummary summarize_heatmap(const vector<int> &heatmap, int rows, int cols)
  * source value, and a small deterministic pulse so each pass keeps doing real
  * work instead of collapsing into a trivial copy.
  */
-int next_pressure_value(int center, int north, int south, int west, int east,
+inline __attribute__((always_inline)) int next_pressure_value(int center, int north, int south, int west, int east,
                         int source, int row, int col, int pass) {
     int pulse = (row * 17 + col * 31 + pass * 13) & 15;
     int pressure = (center * 2 + north + south + west + east + source + pulse) / 8;
@@ -377,13 +377,14 @@ CongestionSummary compute_congestion_pressure(const vector<int> &heatmap,
     vector<int> source(heatmap.size());
 
     for (size_t i = 0; i < heatmap.size(); ++i) {
-        source[i] = heatmap[i] / 8;
+        source[i] = heatmap[i] >> 3;
     }
 
     for (int pass = 0; pass < congestion_passes; ++pass) {
-        for (int col = 1; col < cols - 1; ++col) {
-            for (int row = 1; row < rows - 1; ++row) {
-                int index = row * cols + col;
+        for (int row = 1; row < rows - 1; ++row) {
+            int cur_offset = row * cols;
+            for (int col = 1; col < cols - 1; ++col) {
+                int index = cur_offset + col;
 
                 int center = current[index];
                 int north = current[index - cols];
